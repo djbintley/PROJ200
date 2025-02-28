@@ -399,6 +399,16 @@
               <FileType>5</FileType>
               <FilePath>.\LED.h</FilePath>
             </File>
+            <File>
+              <FileName>DAC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\DAC.c</FilePath>
+            </File>
+            <File>
+              <FileName>DAC.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\DAC.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
