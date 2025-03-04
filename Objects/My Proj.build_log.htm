@@ -3,65 +3,109 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Tool Versions:</h2>
-IDE-Version: µVision V5.41.0.0
-Copyright (C) 2024 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Matthew Seymour, Univeristy of Plymouth, LIC=----
+IDE-Version: µVision V5.37.0.0
+Copyright (C) 2022 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Peter Bye, Plymouth University, LIC=----
  
 Tool Versions:
-Toolchain:       MDK-Lite  Version: 5.41.0.0
-Toolchain Path:  c:\Keil_v5\ARM\ARMCLANG\Bin
-C Compiler:      ArmClang.exe V6.22
-Assembler:       Armasm.exe V6.22
-Linker/Locator:  ArmLink.exe V6.22
-Library Manager: ArmAr.exe V6.22
-Hex Converter:   FromElf.exe V6.22
-CPU DLL:         SARMCM3.DLL V5.41.0.0
+Toolchain:       MDK-Lite  Version: 5.37.0.0
+Toolchain Path:  C:\Keil_v5\ARM\ARMCLANG\Bin
+C Compiler:      ArmClang.exe V6.18
+Assembler:       Armasm.exe V6.18
+Linker/Locator:  ArmLink.exe V6.18
+Library Manager: ArmAr.exe V6.18
+Hex Converter:   FromElf.exe V6.18
+CPU DLL:         SARMCM3.DLL V5.37.0.0
 Dialog DLL:      DCM.DLL V1.17.5.0
-Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.3.0.0
-Dialog DLL:      TCM.DLL V1.56.4.0
+Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.9.0
+Dialog DLL:      TCM.DLL V1.56.1.0
  
 <h2>Project:</h2>
 C:\Users\dbintley\Documents\GitHub\PROJ200\My Proj.uvprojx
-Project File Date:  03/03/2025
+Project File Date:  03/04/2025
 
 <h2>Output:</h2>
-*** Using Compiler 'V6.22', folder: 'c:\Keil_v5\ARM\ARMCLANG\Bin'
+*** Using Compiler 'V6.18', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'Target 1'
-compiling LCD.c...
+main.c(3): warning: In file included from...
+./DAC.h(13): warning: no newline at end of file [-Wnewline-eof]
+        
+        ^
+main.c(10): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+        while(i<SystemCoreClock/(36000/x)){                     // 
+                               ~ ~~~~~^~
+main.c(8): warning: no previous prototype for function 'delay3' [-Wmissing-prototypes]
+void delay3(int x){                                                             // delay a specified number of milliseconds
+     ^
+main.c(8): note: declare 'static' if the function is not intended to be used outside of this translation unit
+void delay3(int x){                                                             // delay a specified number of milliseconds
+^
+static 
+main.c(14): warning: no previous prototype for function 'send_usart' [-Wmissing-prototypes]
+void send_usart(unsigned char d) {
+     ^
+main.c(14): note: declare 'static' if the function is not intended to be used outside of this translation unit
+void send_usart(unsigned char d) {
+^
+static 
+main.c(19): warning: no previous prototype for function 'send_string' [-Wmissing-prototypes]
+void send_string(char *data) {
+     ^
+main.c(19): note: declare 'static' if the function is not intended to be used outside of this translation unit
+void send_string(char *data) {
+^
+static 
+main.c(32): warning: implicit conversion loses integer precision: 'volatile uint32_t' (aka 'volatile unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+        uint16_t pot_value = ADC1->DR;
+                 ~~~~~~~~~   ~~~~~~^~
+main.c(33): warning: implicit conversion loses floating-point precision: 'double' to 'float' [-Wimplicit-float-conversion]
+  float pot_voltage = (pot_value * 3.3) / 4095; // Convert to voltage
+        ~~~~~~~~~~~   ~~~~~~~~~~~~~~~~~~^~~~~~
+main.c(35): warning: implicit conversion increases floating-point precision: 'float' to 'double' [-Wdouble-promotion]
+        sprintf(buffer, "%.3f", pot_voltage);
+        ~~~~~~~                 ^~~~~~~~~~~
+main.c(32): warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
+        uint16_t pot_value = ADC1->DR;
+                 ^
+main.c(49): warning: implicit conversion loses integer precision: 'unsigned int' to 'char' [-Wimplicit-int-conversion]
+                SHOWHR(read_adc());
+                ~~~~~~ ^~~~~~~~~~
+10 warnings generated.
+compiling main.c...
 linking...
-Program Size: Code=8544 RO-data=1052 RW-data=4 ZI-data=1632  
-".\Objects\My Proj.axf" - 0 Error(s), 0 Warning(s).
+Program Size: Code=8672 RO-data=1052 RW-data=4 ZI-data=1632  
+".\Objects\My Proj.axf" - 0 Error(s), 10 Warning(s).
 
 <h2>Software Packages used:</h2>
 
 Package Vendor: ARM
-                https://www.keil.com/pack/ARM.CMSIS.6.1.0.pack
-                ARM::CMSIS@6.1.0
+                http://www.keil.com/pack/ARM.CMSIS.5.9.0.pack
+                ARM.CMSIS.5.9.0
                 CMSIS (Common Microcontroller Software Interface Standard)
-   * Component: CORE Version: 6.1.0
+   * Component: CORE Version: 5.6.0
 
 Package Vendor: Keil
-                https://www.keil.com/pack/Keil.STM32F4xx_DFP.2.17.1.pack
-                Keil::STM32F4xx_DFP@2.17.1
+                http://www.keil.com/pack/Keil.STM32F4xx_DFP.2.14.0.pack
+                Keil.STM32F4xx_DFP.2.14.0
                 STMicroelectronics STM32F4 Series Device Support, Drivers and Examples
    * Component: Startup Version: 2.6.3
 
 <h2>Collection of Component include folders:</h2>
   ./RTE/_Target_1
-  C:/Keil_v5/ARM/Pack/ARM/CMSIS/6.1.0/CMSIS/Core/Include
-  C:/Keil_v5/ARM/Pack/Keil/STM32F4xx_DFP/2.17.1/Drivers/CMSIS/Device/ST/STM32F4xx/Include
+  C:/Keil_v5/ARM/Pack/ARM/CMSIS/5.9.0/CMSIS/Core/Include
+  C:/Keil_v5/ARM/Pack/Keil/STM32F4xx_DFP/2.14.0/Drivers/CMSIS/Device/ST/STM32F4xx/Include
 
 <h2>Collection of Component Files used:</h2>
 
-   * Component: ARM::CMSIS:CORE@6.1.0
+   * Component: ARM::CMSIS:CORE:5.6.0
 
-   * Component: Keil::Device:Startup@2.6.3
+   * Component: Keil::Device:Startup:2.6.3
+      Source file:   MDK/Device/Source/ARM/STM32F42xxx_43xxx_OPT.s
       Source file:   MDK/Device/Source/ARM/STM32F4xx_OTP.s
       Include file:  Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
-      Source file:   MDK/Device/Source/ARM/STM32F42xxx_43xxx_OPT.s
       Source file:   Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/arm/startup_stm32f429xx.s
       Source file:   Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>

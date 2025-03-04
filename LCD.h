@@ -28,7 +28,7 @@
 
 void lcd_delayus(unsigned int us);
 void WaitLcdBusy(void);
-void set_LCD_data(unsigned char d);
+void set_LCD_data(unsigned int d);
 void LCD_strobe(void);
 void cmdLCD(unsigned char cmd);
 void putLCD(unsigned char put);

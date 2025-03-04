@@ -2,6 +2,8 @@
 #include "LED.h"
 #include "DAC.h"
 #include "LCD.h"
+#include "ADC.h"
+#include "stdio.h"
 
 void delay3(int x){								// delay a specified number of milliseconds
 	volatile unsigned int i = 0;			// Create a local variable "i"
@@ -9,9 +11,33 @@ void delay3(int x){								// delay a specified number of milliseconds
 		i++;														// increment "i"
 	}
 }
-
+void send_usart(unsigned char d) {
+    while (!(USART3->SR & USART_SR_TXE)); // Wait until TX buffer is empty
+    USART3->DR = d; // Transmit character
+    while (!(USART3->SR & USART_SR_TC)); // Wait until transmission completes
+}
+void send_string(char *data) {
+    while (*data != '\0') {
+        send_usart(*data);
+        delay3(1); // Small delay (1 ms)
+        data++;
+    }
+}
+static char buffer[5];
+unsigned int read_adc(void)
+{
+	ADC1->CR2|=ADC_CR2_SWSTART;				//start ADC conversion
+	while((ADC1->SR&ADC_SR_EOC)==0){__NOP();}	//wait for ADC conversion complete
+	return ADC1->DR;									//return converted value
+	uint16_t pot_value = ADC1->DR;
+  float pot_voltage = (pot_value * 3.3) / 4095; // Convert to voltage
+	send_string("POT(v): ");
+	sprintf(buffer, "%.3f", pot_voltage);
+	send_string(buffer);
+}
 int main(void){
 	LED_INIT();
+	Init_ADC();
 	DAC_INIT();
 	LCD_INIT();
 	DAC2_DC(3);
@@ -19,9 +45,12 @@ int main(void){
 	while(1){
 		OFFBOARD_LED_ON (RED_LED);
 		ONBOARD_LED_ON (14);
-		delay3(200);
+		OFFBOARD_LED_ON (IR_LED);
+		SHOWHR(read_adc());
+		delay3(20);
 		OFFBOARD_LED_OFF (RED_LED);
 		ONBOARD_LED_OFF (14);
-		delay3(800);
+		OFFBOARD_LED_OFF (IR_LED);
+		delay3(80);
 	}
 }

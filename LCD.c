@@ -12,7 +12,7 @@ void lcd_delayus(unsigned int us)		//blocking delay for LCD, argument is approxi
 
 void WaitLcdBusy(void)
 {
-	unsigned char port = 0x80;
+	unsigned int port = 0x80;
 	set_LCD_bus_input();
 	set_LCD_RW();
 	clr_LCD_RS();
@@ -44,7 +44,7 @@ void SHOWHR(char heartrate){
 
 }
 
-void set_LCD_data(unsigned char d)
+void set_LCD_data(unsigned int d)
 {
 	LCD_PORT->BSRR=(0xff<<(LCD_D0_pin+16));	//clear data lines
 	LCD_PORT->BSRR=(d<<LCD_D0_pin);					//put data on lines
