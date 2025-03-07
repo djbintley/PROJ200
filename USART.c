@@ -1,7 +1,7 @@
 #include "USART.h"
 #include "stdio.h"
 
-/*USART is set so Baud Rate for 230400 bps, 8 data bits, 1 stop bit, even parity*/
+//USART is set so Baud Rate for 230400 bps, 8 data bits, 1 stop bit, even parity, flow control off
 
 void Init_USART(void) {
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;  // Enable GPIO clock

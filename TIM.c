@@ -25,3 +25,10 @@ void TIM2_IRQHandler(void)                //TIMER 2 INTERRUPT SERVICE ROUTINE
       
       timer_tick++;                                               // Increment tick counter
 }
+
+void delay3(int x){								// delay a specified number of milliseconds
+	volatile unsigned int i = 0;			// Create a local variable "i"
+	while(i<SystemCoreClock/(36000/x)){			// 
+		i++;														// increment "i"
+	}
+}
