@@ -4,6 +4,9 @@
 #include "LCD.h"
 #include "ADC.h"
 #include "stdio.h"
+#include "USART.h"
+#include "TIM.h"
+#include "PLL_Config.c"
 
 void delay3(int x){								// delay a specified number of milliseconds
 	volatile unsigned int i = 0;			// Create a local variable "i"
@@ -11,18 +14,7 @@ void delay3(int x){								// delay a specified number of milliseconds
 		i++;														// increment "i"
 	}
 }
-void send_usart(unsigned char d) {
-    while (!(USART3->SR & USART_SR_TXE)); // Wait until TX buffer is empty
-    USART3->DR = d; // Transmit character
-    while (!(USART3->SR & USART_SR_TC)); // Wait until transmission completes
-}
-void send_string(char *data) {
-    while (*data != '\0') {
-        send_usart(*data);
-        delay3(1); // Small delay (1 ms)
-        data++;
-    }
-}
+
 static char buffer[5];
 unsigned int read_adc(void)
 {
@@ -40,17 +32,26 @@ int main(void){
 	Init_ADC();
 	DAC_INIT();
 	LCD_INIT();
+	Init_Timer2();
+	Init_USART();
+	PLL_Config();									// Set system clock to 180MHz
+	SystemCoreClockUpdate();			// Update SystemCoreClock
+
 	DAC2_DC(3);
 	SHOWHR(50);
 	while(1){
+		display_volts();
+		Delay(2000);
+		/*
 		OFFBOARD_LED_ON (RED_LED);
 		ONBOARD_LED_ON (14);
 		OFFBOARD_LED_ON (IR_LED);
 		SHOWHR(read_adc());
-		delay3(20);
+		Delay(20);
 		OFFBOARD_LED_OFF (RED_LED);
 		ONBOARD_LED_OFF (14);
 		OFFBOARD_LED_OFF (IR_LED);
-		delay3(80);
+		Delay(80);
+		*/
 	}
 }

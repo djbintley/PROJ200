@@ -1,3 +1,2 @@
-04/03/2025
-Started writing ADC Code
-Started writing USART code
+07/03/2025
+Added USART and Timers

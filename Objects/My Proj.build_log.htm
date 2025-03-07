@@ -21,60 +21,17 @@ Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V3.0.9.0
 Dialog DLL:      TCM.DLL V1.56.1.0
  
 <h2>Project:</h2>
-C:\Users\dbintley\Documents\GitHub\PROJ200\My Proj.uvprojx
-Project File Date:  03/04/2025
+C:\Users\dbintley\OneDrive - University of Plymouth\Documents\GitHub\PROJ200\PROJ200\My Proj.uvprojx
+Project File Date:  03/07/2025
 
 <h2>Output:</h2>
 *** Using Compiler 'V6.18', folder: 'C:\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'Target 1'
-main.c(3): warning: In file included from...
-./DAC.h(13): warning: no newline at end of file [-Wnewline-eof]
-        
-        ^
-main.c(10): warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
-        while(i<SystemCoreClock/(36000/x)){                     // 
-                               ~ ~~~~~^~
-main.c(8): warning: no previous prototype for function 'delay3' [-Wmissing-prototypes]
-void delay3(int x){                                                             // delay a specified number of milliseconds
-     ^
-main.c(8): note: declare 'static' if the function is not intended to be used outside of this translation unit
-void delay3(int x){                                                             // delay a specified number of milliseconds
-^
-static 
-main.c(14): warning: no previous prototype for function 'send_usart' [-Wmissing-prototypes]
-void send_usart(unsigned char d) {
-     ^
-main.c(14): note: declare 'static' if the function is not intended to be used outside of this translation unit
-void send_usart(unsigned char d) {
-^
-static 
-main.c(19): warning: no previous prototype for function 'send_string' [-Wmissing-prototypes]
-void send_string(char *data) {
-     ^
-main.c(19): note: declare 'static' if the function is not intended to be used outside of this translation unit
-void send_string(char *data) {
-^
-static 
-main.c(32): warning: implicit conversion loses integer precision: 'volatile uint32_t' (aka 'volatile unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
-        uint16_t pot_value = ADC1->DR;
-                 ~~~~~~~~~   ~~~~~~^~
-main.c(33): warning: implicit conversion loses floating-point precision: 'double' to 'float' [-Wimplicit-float-conversion]
-  float pot_voltage = (pot_value * 3.3) / 4095; // Convert to voltage
-        ~~~~~~~~~~~   ~~~~~~~~~~~~~~~~~~^~~~~~
-main.c(35): warning: implicit conversion increases floating-point precision: 'float' to 'double' [-Wdouble-promotion]
-        sprintf(buffer, "%.3f", pot_voltage);
-        ~~~~~~~                 ^~~~~~~~~~~
-main.c(32): warning: mixing declarations and code is incompatible with standards before C99 [-Wdeclaration-after-statement]
-        uint16_t pot_value = ADC1->DR;
-                 ^
-main.c(49): warning: implicit conversion loses integer precision: 'unsigned int' to 'char' [-Wimplicit-int-conversion]
-                SHOWHR(read_adc());
-                ~~~~~~ ^~~~~~~~~~
-10 warnings generated.
 compiling main.c...
+compiling USART.c...
 linking...
-Program Size: Code=8672 RO-data=1052 RW-data=4 ZI-data=1632  
-".\Objects\My Proj.axf" - 0 Error(s), 10 Warning(s).
+Program Size: Code=10932 RO-data=1076 RW-data=4 ZI-data=1648  
+".\Objects\My Proj.axf" - 0 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -101,11 +58,11 @@ Package Vendor: Keil
 
    * Component: Keil::Device:Startup:2.6.3
       Source file:   MDK/Device/Source/ARM/STM32F42xxx_43xxx_OPT.s
-      Source file:   MDK/Device/Source/ARM/STM32F4xx_OTP.s
       Include file:  Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
+      Source file:   MDK/Device/Source/ARM/STM32F4xx_OTP.s
       Source file:   Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/arm/startup_stm32f429xx.s
       Source file:   Drivers/CMSIS/Device/ST/STM32F4xx/Source/Templates/system_stm32f4xx.c
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:00
 </pre>
 </body>
 </html>
