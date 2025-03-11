@@ -1,6 +1,6 @@
 #include "TIM.h"
 
-uint32_t timer_tick = 0; // Global variable to track timer ticks - used with timer 2
+extern uint32_t timer_tick; // Global variable to track timer ticks - used with timer 2
 
 void Init_Timer2(void)
 {

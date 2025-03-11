@@ -3,6 +3,7 @@
 // Existing ADC initialization function
 void Init_ADC(void)
 {
+		RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN;	// Enable GPIOC clock
     RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;  // Enable GPIOA clock
     ADC_input_port->MODER |= (3u << (2 * ADC_input_pin));  // Set ADC pin to analog mode
 
@@ -138,3 +139,4 @@ unsigned int ADC_Get_HeartRateBPM(void)
 {
     return heartRateBPM;
 }
+
