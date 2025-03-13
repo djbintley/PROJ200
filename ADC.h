@@ -20,4 +20,4 @@ void ADC_HeartRate_Init(void);       // Initialize heart rate processing variabl
 void ADC_HeartRate_Update(void);     // Update heart rate calculation (call every 1 ms)
 unsigned int ADC_Get_HeartRateBPM(void); // Retrieve the latest calculated heart rate in BPM
 
-#endif
+ #endif

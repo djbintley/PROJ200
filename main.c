@@ -6,60 +6,57 @@
 #include "USART.h"
 #include "TIM.h"
 #include "PLL_Config.c"
-#include "stdio.h"  // For sprintf
+#include "stdio.h"
 
-uint32_t timer_tick;
+extern uint32_t timer_tick;
 
 int main(void)
 {
-    // Configure the PLL and update the system clock before initializing peripherals.
-    PLL_Config();              
+    // Set up the system clock and update core frequency
+    PLL_Config();
     SystemCoreClockUpdate();
-
-    // Initialize the peripherals.
+    
+    // Initialize peripherals
     LED_INIT();
     Init_ADC();
     DAC_INIT();
     LCD_INIT();
     Init_Timer2();
     Init_USART();
-
-    // Initialize the ADC heart rate processing.
-    ADC_HeartRate_Init();
-
-    // Turn on the IR LED.
+    
+    // Use only the RED LED
     OFFBOARD_LED_ON(RED_LED);
-
-    // Variables to help update the display periodically.
+    
+    // Initialize heartbeat detection
+    ADC_HeartRate_Init();
+    
     unsigned int lastDisplayTime = 0;
-    char msg[20];
-
+    char msg[30];
+    
     while(1)
     {
-        // Call the heart rate update function every 1ms.
-        // (Here, we use Delay(1) to approximate a 1ms period.)
+        // Process one ADC sample for heartbeat detection (call at 1ms rate)
         ADC_HeartRate_Update();
-
-        // Update the display and USART output every 500ms.
-        if ((timer_tick - lastDisplayTime) >= 500)
+        
+        // Every 500ms, update the display and USART output with the current BPM
+        if((timer_tick - lastDisplayTime) >= 500)
         {
             lastDisplayTime = timer_tick;
-           
-            // Retrieve the current heart rate in BPM.
-            // (Assumes that the value is within an appropriate range.)
-            unsigned int bpm = ADC_Get_HeartRateBPM();
-           
-            // Display heart rate on the LCD.
-            // Note: SHOWHR() is defined in LCD.c. If needed, modify it to accept a wider range.
-            SHOWHR((char)bpm);  
-           
-            // Format the heart rate into a message and send it via USART (to Putty).
-            sprintf(msg, "HR: %u BPM\r\n", bpm);
+					
+					// Clear the line by setting the cursor to the line and printing spaces.
+						cmdLCD(LCD_LINE1);
+						printLCD("                ");  // Adjust the number of spaces to cover the line
+					
+					// Now print the new BPM value.
+            sprintf(msg, "BPM: %u", ADC_Get_HeartRateBPM());
+            cmdLCD(LCD_LINE1);
+            printLCD(msg);
+					
+            sprintf(msg, "BPM: %u\r\n", ADC_Get_HeartRateBPM());
             send_string(msg);
         }
-       
-        // Wait 1ms before taking the next sample.
+        
+        // Wait approximately 1ms before processing the next ADC sample.
         Delay(1);
     }
 }
-

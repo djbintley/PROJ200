@@ -23,120 +23,77 @@ unsigned int read_adc(void)
     return ADC1->DR;                          // Return ADC result
 }
 
-/* ------------------------- Heart Rate Conversion Code ------------------------- */
-/* The following code uses a circular buffer to store recent ADC samples.
-   Every 1 ms (at 1 kHz), a new sample is read and placed into the buffer.
-   The last 5 samples are averaged to reduce noise. When the averaged value exceeds
-   a set threshold and enough time has passed since the last detected peak, a heartbeat
-   is counted, and the BPM (beats per minute) is updated. */
+//--------------------- Heart Rate Detection (Hysteresis) ---------------------//
 
-/* Configuration constants (tweak these as needed) */
-#define PEAK_THRESHOLD          2000    // Averaged ADC value threshold for a heartbeat peak
-#define MIN_PEAK_INTERVAL_MS    300     // Minimum interval between peaks (in ms)
-#define SAMPLE_RATE_HZ          1000    // Sampling rate: 1 kHz
-#define AVERAGE_COUNT           5       // Number of samples to average
-#define CIRC_BUFFER_SIZE        100     // Circular buffer size (holds the last 100 samples)
+// Parameters for the heartbeat detection algorithm.
+#define HIGH_THRESHOLD   3000   // ADC average must exceed this value to count a beat
+#define LOW_THRESHOLD    900    // ADC average must drop below this value to allow a new beat
+#define AVERAGE_COUNT    5      // Number of samples to average
+#define REFRACTORY_MS    300    // Minimum time (in ms) between beats
 
-/* Circular buffer and related variables */
-static unsigned int adcCircularBuffer[CIRC_BUFFER_SIZE];
-static unsigned int writeIndex = 0;    // Next write location in the buffer
-static unsigned int sampleCount = 0;     // Total samples stored (max = CIRC_BUFFER_SIZE)
+// Static variables to hold heartbeat detection state.
+static unsigned int hr_sampleBuffer[AVERAGE_COUNT];
+static unsigned char hr_sampleIndex = 0;
+static unsigned int hr_prevBeatTime = 0;  // Timestamp of the previous beat (ms)
+static unsigned int hr_currentBPM = 0;    // Calculated BPM
+static unsigned char hr_beatTriggered = 0; // Flag: 0 = no beat, 1 = beat detected
 
-/* Variables for filtering and heart rate calculation */
-static unsigned int filteredSample = 0;
-static unsigned int lastPeakTime = 0;    // Time (in ms) of last detected peak
-static unsigned int heartRateBPM = 0;      // Calculated heart rate in BPM
-static unsigned int peakDetected = 0;      // Flag: 0 = no peak detected, 1 = peak detected
-static unsigned int prevFilteredSample = 0; // For outlier rejection
-
-// Helper: Average the last AVERAGE_COUNT samples from the circular buffer
-static unsigned int AverageLastSamples(void)
+// Compute the average of the last AVERAGE_COUNT samples.
+static unsigned int hr_ComputeAverage(void)
 {
     unsigned int sum = 0;
-    unsigned int i;
-    unsigned int start;
-    
-    // Determine starting index for the last AVERAGE_COUNT samples
-    if (writeIndex >= AVERAGE_COUNT)
-        start = writeIndex - AVERAGE_COUNT;
-    else
-        start = CIRC_BUFFER_SIZE + writeIndex - AVERAGE_COUNT;
-    
-    // Sum the samples, wrapping around if needed
-    for (i = 0; i < AVERAGE_COUNT; i++) {
-        unsigned int idx = (start + i) % CIRC_BUFFER_SIZE;
-        sum += adcCircularBuffer[idx];
+    unsigned char i;
+    for(i = 0; i < AVERAGE_COUNT; i++){
+        sum += hr_sampleBuffer[i];
     }
-    
     return sum / AVERAGE_COUNT;
 }
 
-// This function should be called every 1 ms (e.g., from a timer interrupt)
-void ADC_HeartRate_Update(void)
-{
-    unsigned int newSample = read_adc();
-    
-    // Simple outlier rejection:
-    // If a new sample is more than 50% above the previous average, assume it's an artifact.
-    if (sampleCount > 0 && newSample > (prevFilteredSample * 3 / 2))
-    {
-        newSample = prevFilteredSample;
-    }
-    
-    // Store the new sample into the circular buffer at the current write index.
-    adcCircularBuffer[writeIndex] = newSample;
-    writeIndex = (writeIndex + 1) % CIRC_BUFFER_SIZE;
-    if (sampleCount < CIRC_BUFFER_SIZE)
-        sampleCount++;
-    
-    // Only process if we have at least AVERAGE_COUNT samples.
-    if (sampleCount >= AVERAGE_COUNT)
-    {
-        filteredSample = AverageLastSamples();
-        
-        // Peak detection:
-        // When the averaged value exceeds the threshold and no peak is already marked,
-        // and sufficient time has passed since the last peak, then register a heartbeat.
-        if (filteredSample > PEAK_THRESHOLD && peakDetected == 0)
-        {
-            unsigned int currentTime = timer_tick;  // timer_tick must be updated every 1 ms.
-            if ((currentTime - lastPeakTime) >= MIN_PEAK_INTERVAL_MS)
-            {
-                if (lastPeakTime != 0)
-                {
-                    // BPM = 60000 ms divided by the interval between peaks
-                    heartRateBPM = 60000 / (currentTime - lastPeakTime);
-                }
-                lastPeakTime = currentTime;
-                peakDetected = 1;
-            }
-        }
-        // Clear the peak flag when the signal drops below the threshold.
-        if (filteredSample < PEAK_THRESHOLD)
-        {
-            peakDetected = 0;
-        }
-        
-        // Save the current filtered value for outlier rejection in future samples.
-        prevFilteredSample = filteredSample;
-    }
-}
-
-// Initialization for heart rate conversion.
+// Initialize heartbeat detection variables.
 void ADC_HeartRate_Init(void)
 {
-    writeIndex = 0;
-    sampleCount = 0;
-    filteredSample = 0;
-    lastPeakTime = 0;
-    heartRateBPM = 0;
-    peakDetected = 0;
-    prevFilteredSample = 0;
+    hr_sampleIndex = 0;
+    hr_prevBeatTime = 0;
+    hr_currentBPM = 0;
+    hr_beatTriggered = 0;
 }
 
-// Returns the latest calculated heart rate in BPM.
+// This function should be called every 1ms to process one ADC sample.
+void ADC_HeartRate_Update(void)
+{
+    unsigned int adcVal = read_adc();
+    hr_sampleBuffer[hr_sampleIndex] = adcVal;
+    hr_sampleIndex = (hr_sampleIndex + 1) % AVERAGE_COUNT;
+    
+    // When the sample buffer is filled (i.e. when hr_sampleIndex wraps to 0)
+    if(hr_sampleIndex == 0)
+    {
+        unsigned int avgVal = hr_ComputeAverage();
+        
+        // If the averaged value exceeds HIGH_THRESHOLD, no beat is triggered,
+        // and at least REFRACTORY_MS has elapsed since the previous beat, register a beat.
+        if(avgVal > HIGH_THRESHOLD && hr_beatTriggered == 0 &&
+           ((timer_tick - hr_prevBeatTime) >= REFRACTORY_MS))
+        {
+            if(hr_prevBeatTime != 0)
+            {
+                unsigned int interval = timer_tick - hr_prevBeatTime;
+                hr_currentBPM = 60000 / interval;
+            }
+            hr_prevBeatTime = timer_tick;
+            hr_beatTriggered = 1;
+        }
+        
+        // Reset the trigger when the average falls below LOW_THRESHOLD.
+        if(avgVal < LOW_THRESHOLD)
+        {
+            hr_beatTriggered = 0;
+        }
+    }
+}
+
+// Retrieve the latest calculated BPM.
 unsigned int ADC_Get_HeartRateBPM(void)
 {
-    return heartRateBPM;
+    return hr_currentBPM;
 }
-
