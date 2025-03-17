@@ -28,7 +28,7 @@ unsigned int read_adc(void)
 // Parameters for the heartbeat detection algorithm.
 #define HIGH_THRESHOLD   3000   // ADC average must exceed this value to count a beat
 #define LOW_THRESHOLD    900    // ADC average must drop below this value to allow a new beat
-#define AVERAGE_COUNT    5      // Number of samples to average
+#define AVERAGE_COUNT    50      // Number of samples to average
 #define REFRACTORY_MS    300    // Minimum time (in ms) between beats
 
 // Static variables to hold heartbeat detection state.
@@ -72,7 +72,7 @@ void ADC_HeartRate_Update(void)
         
         // If the averaged value exceeds HIGH_THRESHOLD, no beat is triggered,
         // and at least REFRACTORY_MS has elapsed since the previous beat, register a beat.
-        if(avgVal > HIGH_THRESHOLD && hr_beatTriggered == 0 &&
+        if(avgVal < LOW_THRESHOLD && hr_beatTriggered == 0 &&
            ((timer_tick - hr_prevBeatTime) >= REFRACTORY_MS))
         {
             if(hr_prevBeatTime != 0)
@@ -85,7 +85,7 @@ void ADC_HeartRate_Update(void)
         }
         
         // Reset the trigger when the average falls below LOW_THRESHOLD.
-        if(avgVal < LOW_THRESHOLD)
+        if(avgVal > HIGH_THRESHOLD)
         {
             hr_beatTriggered = 0;
         }

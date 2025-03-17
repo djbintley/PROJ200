@@ -39,7 +39,7 @@ int main(void)
         ADC_HeartRate_Update();
         
         // Every 500ms, update the display and USART output with the current BPM
-        if((timer_tick - lastDisplayTime) >= 500)
+        if((timer_tick - lastDisplayTime) >= 1000)
         {
             lastDisplayTime = timer_tick;
 					
