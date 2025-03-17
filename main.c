@@ -6,6 +6,7 @@
 #include "USART.h"
 #include "TIM.h"
 #include "BUZZ.h"
+#include "Button.h"
 #include "PLL_Config.c"
 #include "stdio.h"
 

@@ -459,6 +459,16 @@
               <FileType>5</FileType>
               <FilePath>.\BUZZ.h</FilePath>
             </File>
+            <File>
+              <FileName>BUTTON.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\BUTTON.h</FilePath>
+            </File>
+            <File>
+              <FileName>BUTTON.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\BUTTON.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
