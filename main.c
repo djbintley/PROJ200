@@ -25,6 +25,7 @@ int main(void)
     LCD_INIT();
     Init_Timer2();
     Init_USART();
+		BUZZ_INIT();
     
     // Use only the RED LED
     OFFBOARD_LED_ON(RED_LED);
