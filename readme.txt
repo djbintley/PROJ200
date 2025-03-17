@@ -1,2 +1,3 @@
-11/03/2025
-Added adc circular buffer code
+17/03/2025
+Trough detection added
+Geartrate displayed on UART and LCD every 1 second

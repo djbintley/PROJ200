@@ -82,6 +82,7 @@ void ADC_HeartRate_Update(void)
             }
             hr_prevBeatTime = timer_tick;
             hr_beatTriggered = 1;
+						beep = 1;
         }
         
         // Reset the trigger when the average falls below LOW_THRESHOLD.
