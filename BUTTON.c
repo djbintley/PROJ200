@@ -1,16 +1,30 @@
 #include "BUTTON.h"
 
+int Menu = 0;
+
 void interrupt_init(void){
-	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;		//ONLY Enable the SYSCFG clock
+	// Enable SYSCFG clock
+	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN;
 
-  SYSCFG->EXTICR[3] |= SYSCFG_EXTICR4_EXTI13_PC;  // Connect  EXTI13 to GPIOC
+	 // Map PG0-PG3 to EXTI0-EXTI3
+	SYSCFG->EXTICR[0] |= (SYSCFG_EXTICR1_EXTI0_PG |SYSCFG_EXTICR1_EXTI1_PG | SYSCFG_EXTICR1_EXTI2_PG | SYSCFG_EXTICR1_EXTI3_PG);
+	SYSCFG->EXTICR[3] |= SYSCFG_EXTICR4_EXTI13_PC;  // Connect  EXTI13 to GPIOC	
 
-																				// Configure EXTI Line 13 for interrupt
-  EXTI->IMR |= EXTI_IMR_MR13;  					// Unmask EXTI13
-  EXTI->FTSR |= EXTI_FTSR_TR13;  				// Trigger on falling edge (button press)
-  EXTI->RTSR |= EXTI_RTSR_TR13;  				// Trigger on rising edge (button release)
+	// Unmask EXTI lines 0-3
+	EXTI->IMR |= EXTI_IMR_IM0 |EXTI_IMR_IM1 | EXTI_IMR_IM2 | EXTI_IMR_IM3 | EXTI_IMR_MR13;
 
-    
+	// Configure rising edge trigger
+	EXTI->RTSR |= EXTI_RTSR_TR0 |EXTI_RTSR_TR1 | EXTI_RTSR_TR2 | EXTI_RTSR_TR3 | EXTI_RTSR_TR13;
+	EXTI->FTSR |= EXTI_FTSR_TR13;  				// Trigger on falling edge (button press)
+	
+	// Clear pending interrupts (if any)
+	EXTI->PR = EXTI_PR_PR0 |EXTI_PR_PR1 | EXTI_PR_PR2 | EXTI_PR_PR3;
+	
+	// Enable EXTI0 - EXTI3 interrupts in NVIC
+	NVIC_EnableIRQ(EXTI0_IRQn);
+	NVIC_EnableIRQ(EXTI1_IRQn);
+	NVIC_EnableIRQ(EXTI2_IRQn);
+	NVIC_EnableIRQ(EXTI3_IRQn);
   NVIC_EnableIRQ(EXTI15_10_IRQn);			// Enable EXTI line 13 interrupt in NVIC
 }
 
@@ -46,6 +60,39 @@ void Hold(void){
 }
 int pressed = 0;
 int start = 0;
+
+// Interrupt Handlers
+void EXTI0_IRQHandler(void) {
+    if (EXTI->PR & EXTI_PR_PR0) {
+        EXTI->PR = EXTI_PR_PR0;  // Clear pending bit
+        GPIOB->ODR ^= (1 << 14);
+				Menu--;
+    }
+}
+
+void EXTI1_IRQHandler(void) {
+    if (EXTI->PR & EXTI_PR_PR1) {
+        EXTI->PR = EXTI_PR_PR1;  // Clear pending bit
+        GPIOB->ODR ^= (1 << 14);
+    }
+}
+
+void EXTI2_IRQHandler(void) {
+    if (EXTI->PR & EXTI_PR_PR2) {
+        EXTI->PR = EXTI_PR_PR2;  // Clear pending bit
+        GPIOB->ODR ^= (1 << 14);
+				Menu++;
+    }
+}
+
+void EXTI3_IRQHandler(void) {
+    if (EXTI->PR & EXTI_PR_PR3) {
+        EXTI->PR = EXTI_PR_PR3;  // Clear pending bit
+        GPIOB->ODR ^= (1 << 14);
+    }
+}
+
+//Not working atm, need to initialise TIM4 if needed
 void EXTI15_10_IRQHandler(void){						// Interrupt handler for EXTI Line 13 (Blue Button)
 	if (EXTI->PR & (1 << Blue_Button)) {  		// Check if EXTI13 caused the interrupt		
 		if (pressed == 0) {											// Button Pressed down
@@ -63,7 +110,3 @@ void EXTI15_10_IRQHandler(void){						// Interrupt handler for EXTI Line 13 (Blu
 
 
 
-void Toggle_LED (char LED)
-{
-	GPIOB->ODR^=(1u<<LED);								// XOR GPIOB output data register to invert the selected pin
-}

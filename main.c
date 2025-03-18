@@ -26,6 +26,8 @@ int main(void)
     Init_Timer2();
     Init_USART();
 		BUZZ_INIT();
+		interrupt_init();
+		Buttons_init();
     
     // Use only the RED LED
     OFFBOARD_LED_ON(RED_LED);
@@ -40,6 +42,7 @@ int main(void)
     {
         // Process one ADC sample for heartbeat detection (call at 1ms rate)
         ADC_HeartRate_Update();
+			
         
         // Every 500ms, update the display and USART output with the current BPM
         if((timer_tick - lastDisplayTime) >= 1000)

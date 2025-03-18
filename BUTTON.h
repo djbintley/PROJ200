@@ -3,6 +3,8 @@
 #include <stm32f429xx.h>
 #include "LED.h"
 
+extern int Menu;
+
 #define Blue_Button 13 
 void Buttons_init (void);   			//Initialise the blue button
 void interrupt_init(void);				//Initialise the interrupts for the blue button
