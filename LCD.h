@@ -1,6 +1,8 @@
 #ifndef _LCD_H_
 #define _LCD_H_
 #include <stm32f4xx.h>
+#include "USART.h"
+#include "BUTTON.h"
 
 #define LCD_PORT	GPIOD
 #define LCD_RS_pin	11
@@ -35,5 +37,6 @@ void putLCD(unsigned char put);
 void LCD_INIT(void);
 void printLCD(char *data);
 void SHOWHR(char heartrate);
+void update_LCD(void);
 
 #endif

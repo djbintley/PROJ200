@@ -72,3 +72,48 @@ void display_volts(){
 
       
 };
+
+char HR[30]; //budder used for heartrate
+
+void display_menu(void) {
+    send_string(RESET_SCREEN); // Clear screen and reset cursor
+
+    // Title
+    send_string(COLOUR_WHITE "=== SPO2 MONITOR ===" COLOUR_RESET "\r\n\r\n");
+
+    // Menu items with colors
+    send_string(COLOUR_RED "H - Heartrate:     " COLOUR_RESET "\r\n");
+    send_string(COLOUR_WHITE "O - Oxygen Level:  " COLOUR_RESET "\r\n");
+    send_string(COLOUR_YELLOW "T - Temperature:   " COLOUR_RESET "\r\n");
+    send_string(COLOUR_GREEN "U - Humidity:     " COLOUR_RESET "\r\n");
+    send_string(COLOUR_BLUE "M - Movement:     " COLOUR_RESET "\r\n");
+}
+
+//\033[<row>;<col>H for movement  3:15, 4:18, 5:17, 6:14, 7:14
+
+
+void update_menu(void){
+	send_string(RESET_CURSOR);
+	
+	//Update Heartrate
+	send_string("\033[3;15H");
+	send_string(RESET_LINE);
+	sprintf(HR, "%u", ADC_Get_HeartRateBPM());
+  send_string(HR);
+	
+	//Update Oxygen
+	send_string("\033[4;18H");
+	send_string(RESET_LINE);
+  send_string("");
+	
+	//Update Temperature
+	send_string("\033[5;17H");
+	send_string(RESET_LINE);
+  send_string("Unavailable");
+	
+	
+}
+
+void hide_cursor(void){
+	send_string("\033[?25l");
+}

@@ -36,20 +36,24 @@ int main(void)
     ADC_HeartRate_Init();
     
     unsigned int lastDisplayTime = 0;
-    char msg[30];
     
+    hide_cursor();
+		display_menu();
+		
     while(1)
     {
         // Process one ADC sample for heartbeat detection (call at 1ms rate)
         ADC_HeartRate_Update();
 			
         
-        // Every 500ms, update the display and USART output with the current BPM
+        // Every 1000ms, update the display and USART output with the current BPM
         if((timer_tick - lastDisplayTime) >= 1000)
         {
             lastDisplayTime = timer_tick;
 					
-					// Clear the line by setting the cursor to the line and printing spaces.
+						update_LCD();
+					  update_menu();
+					/*// Clear the line by setting the cursor to the line and printing spaces.
 						cmdLCD(LCD_LINE1);
 						printLCD("                ");  // Adjust the number of spaces to cover the line
 					
@@ -59,7 +63,8 @@ int main(void)
             printLCD(msg);
 					
             sprintf(msg, "BPM: %u\r\n", ADC_Get_HeartRateBPM());
-            send_string(msg);
+            send_string(msg);*/
+					
         }
         
         // Wait approximately 1ms before processing the next ADC sample.

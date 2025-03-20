@@ -113,3 +113,59 @@ void LCD_INIT(void)
 	cmdLCD(LCD_LINE1);
 	printLCD("Hello");
 }
+
+void update_LCD(void){
+	if (Menu == 0){
+		// Clear LCD
+			cmdLCD(LCD_LINE1);
+			printLCD("                ");  // Adjust the number of spaces to cover the line
+		
+		// Now print the new BPM value.
+			sprintf(HR, "BPM: %u", ADC_Get_HeartRateBPM());
+			cmdLCD(LCD_LINE1);
+			printLCD(HR);
+	}
+	if (Menu == 1) {
+		// Clear LCD
+			cmdLCD(LCD_LINE1);
+			printLCD("                ");  // Adjust the number of spaces to cover the line			
+		
+		//print test
+			cmdLCD(LCD_LINE1);
+			printLCD("test");
+		
+	}
+	if (Menu == 2) {
+		// Clear LCD
+			cmdLCD(LCD_LINE1);
+			printLCD("                ");  // Adjust the number of spaces to cover the line			
+		
+		//print test2
+			cmdLCD(LCD_LINE1);
+			printLCD("test2");
+		
+	}
+	
+	if (Menu == 3) {
+		// Clear LCD
+			cmdLCD(LCD_LINE1);
+			printLCD("                ");  // Adjust the number of spaces to cover the line			
+		
+		//print test3
+			cmdLCD(LCD_LINE1);
+			printLCD("test3");
+	}
+	if (Menu == 4) {
+		// Clear LCD
+			cmdLCD(LCD_LINE1);
+			printLCD("                ");  // Adjust the number of spaces to cover the line
+		
+		// Now print the new BPM value.
+			sprintf(HR, "BPM: %u", ADC_Get_HeartRateBPM());
+			cmdLCD(LCD_LINE1);
+			printLCD(HR);
+		  Menu=0;	
+		
+	}
+	
+}
