@@ -27,4 +27,9 @@ unsigned int ADC_Get_HeartRateBPM(void); // Retrieve the latest calculated heart
 
 void buffdate (void);	//Update the 15 second buffer
 unsigned int getbpm (void);	//Read the 15 second buffer
+
+void ADC_Get_MinMax(unsigned int *min, unsigned int *max); // reads the minmax from buffer
+
+
+
  #endif

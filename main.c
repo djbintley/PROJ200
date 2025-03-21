@@ -43,7 +43,7 @@ int main(void)
     
     hide_cursor();
 		display_menu();
-		
+		unsigned int minVal, maxVal;
     while(1)
     {
         // Process one ADC sample for heartbeat detection (call at 1ms rate)
@@ -52,10 +52,18 @@ int main(void)
         if((timer_tick - lastDisplayTime) >= 500)
         {
             lastDisplayTime = timer_tick;
-				    buffdate();
+				    /*buffdate();
 						update_LCD();
 					  update_menu();
-						update_RGB_bar_from_HR();
+						update_RGB_bar_from_HR();*/
+					
+ADC_Get_MinMax(&minVal, &maxVal);
+sprintf(HR, "MIN: %u, MAX: %u", minVal, maxVal);
+cmdLCD(LCD_LINE2); // For example, display on second line of LCD
+printLCD(HR);
+send_string(HR);
+send_string("\r\n");
+
         }
         
         // Wait approximately 1ms before processing the next ADC sample.

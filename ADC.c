@@ -118,3 +118,23 @@ unsigned int getbpm (void){
 	}
 	return sum / 30;
 }
+
+
+// Function to get the minimum and maximum values stored in the ADC buffer.
+// 'min' and 'max' are pointers where the results will be stored.
+void ADC_Get_MinMax(unsigned int *min, unsigned int *max)
+{
+    unsigned int local_min = hr_sampleBuffer[0];
+    unsigned int local_max = hr_sampleBuffer[0];
+    unsigned char i;
+    
+    for (i = 1; i < AVERAGE_COUNT; i++) {
+        if (hr_sampleBuffer[i] < local_min)
+            local_min = hr_sampleBuffer[i];
+        if (hr_sampleBuffer[i] > local_max)
+            local_max = hr_sampleBuffer[i];
+    }
+    
+    *min = local_min;
+    *max = local_max;
+}
