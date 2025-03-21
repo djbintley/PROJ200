@@ -1,5 +1,7 @@
 #include "ADC.h"
 
+unsigned int adcVal = 0;
+
 // Existing ADC initialization function
 void Init_ADC(void)
 {
@@ -61,7 +63,7 @@ void ADC_HeartRate_Init(void)
 // This function should be called every 1ms to process one ADC sample.
 void ADC_HeartRate_Update(void)
 {
-    unsigned int adcVal = read_adc();
+    adcVal = read_adc();
     hr_sampleBuffer[hr_sampleIndex] = adcVal;
     hr_sampleIndex = (hr_sampleIndex + 1) % AVERAGE_COUNT;
     
@@ -97,4 +99,22 @@ void ADC_HeartRate_Update(void)
 unsigned int ADC_Get_HeartRateBPM(void)
 {
     return hr_currentBPM;
+}
+
+static unsigned int buff_index = 0;
+static unsigned int big_sampleBuffer[15]= {80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,};
+
+void buffdate (void){
+	big_sampleBuffer[buff_index] = ADC_Get_HeartRateBPM();
+	if (buff_index <14)buff_index++;
+	else buff_index = 0;
+}
+
+unsigned int getbpm (void){
+	unsigned int sum = 0;
+	unsigned char i;
+	for(i = 0; i < 15; i++){
+			sum += big_sampleBuffer[i];
+	}
+	return sum / 15;
 }

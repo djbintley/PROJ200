@@ -98,7 +98,7 @@ void update_menu(void){
 	//Update Heartrate
 	send_string("\033[3;15H");
 	send_string(RESET_LINE);
-	sprintf(HR, "%u", ADC_Get_HeartRateBPM());
+	sprintf(HR, "%u", getbpm());
   send_string(HR);
 	
 	//Update Oxygen

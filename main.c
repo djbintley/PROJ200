@@ -11,6 +11,8 @@
 #include "stdio.h"
 
 extern uint32_t timer_tick;
+extern unsigned int adcVal;
+
 
 int main(void)
 {
@@ -23,6 +25,7 @@ int main(void)
     Init_ADC();
     DAC_INIT();
     LCD_INIT();
+		BAR_INIT();
     Init_Timer2();
     Init_USART();
 		BUZZ_INIT();
@@ -31,7 +34,8 @@ int main(void)
     
     // Use only the RED LED
     OFFBOARD_LED_ON(RED_LED);
-    
+		DAC2_DC(4000);
+	
     // Initialize heartbeat detection
     ADC_HeartRate_Init();
     
@@ -44,27 +48,14 @@ int main(void)
     {
         // Process one ADC sample for heartbeat detection (call at 1ms rate)
         ADC_HeartRate_Update();
-			
-        
         // Every 1000ms, update the display and USART output with the current BPM
         if((timer_tick - lastDisplayTime) >= 1000)
         {
             lastDisplayTime = timer_tick;
-					
+				    buffdate();
 						update_LCD();
 					  update_menu();
-					/*// Clear the line by setting the cursor to the line and printing spaces.
-						cmdLCD(LCD_LINE1);
-						printLCD("                ");  // Adjust the number of spaces to cover the line
-					
-					// Now print the new BPM value.
-            sprintf(msg, "BPM: %u", ADC_Get_HeartRateBPM());
-            cmdLCD(LCD_LINE1);
-            printLCD(msg);
-					
-            sprintf(msg, "BPM: %u\r\n", ADC_Get_HeartRateBPM());
-            send_string(msg);*/
-					
+						update_RGB_bar_from_HR();
         }
         
         // Wait approximately 1ms before processing the next ADC sample.

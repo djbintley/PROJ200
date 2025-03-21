@@ -56,3 +56,107 @@ void OFFBOARD_LED_ON (char LED){
 void OFFBOARD_LED_OFF (char LED){
 			GPIOD->BSRR = 1<<LED<<16;							//ONLY TURN SPECIFIED LED Off
 }
+
+#define MAX_VOLTAGE 3.0f  // Max voltage mapped to LED bar
+#define MAX_LEDS 24   // Total number of LEDs (8 Red, 8 Green, 8 Blue)
+
+void BAR_INIT(void){
+       RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN; // Enable GPIOE clock
+    // Configure PE0 (RGB BAR Output enable) as output
+    GPIOE->MODER &= ~(3UL << (2 * LED_BAR_OE));  // Clear PE0 mode bits
+    GPIOE->MODER |= (1UL << (2 * LED_BAR_OE));   // Set PE0 as output (!OE for RGB Bar)
+
+            // Configure PE13 (Green latch) as output
+    GPIOE->MODER &= ~(3UL << (2 * PE13));  // Clear mode bits for PE12
+    GPIOE->MODER |= (1UL << (2 * PE13));   // Set PE12 as output
+      
+        // Configure PE12 (Red latch) as output
+    GPIOE->MODER &= ~(3UL << (2 * PE12));  // Clear mode bits for PE12
+    GPIOE->MODER |= (1UL << (2 * PE12));   // Set PE12 as output
+      
+        // Configure PE14 (Blue latch) as output
+    GPIOE->MODER &= ~(3UL << (2 * PE14));  // Clear mode bits for PE12
+    GPIOE->MODER |= (1UL << (2 * PE14));   // Set PE12 as output
+      
+      
+   
+    // Set Output Type (Push-Pull)
+    GPIOE->OTYPER &= ~((1UL << LED_BAR_OE) | (1UL << PE12) | (1UL << PE13) | (1UL << PE14));
+   
+    // Set Pull-down resistors to avoid floating states
+    GPIOE->PUPDR &= ~((3UL << (2 * LED_BAR_OE)));
+    GPIOE->PUPDR |= (2UL << (2 * LED_BAR_OE)); // Pull-down
+                  
+        GPIOE->BSRR = (1UL << PE12) << 16; // Set Red Latch LOW (Disabled)
+    GPIOE->BSRR = (1UL << PE13) << 16; // Set Green Latch LOW (Disabled)
+    GPIOE->BSRR = (1UL << PE14) << 16; // Set Blue Latch LOW (Disabled)
+    GPIOE->BSRR = (1UL << LED_BAR_OE);  // Disable RGB Bar (OE HIGH)
+  
+}
+
+
+// Function to write values to the LED bus for RGB BAR
+void Write_RGB_LEDBus(uint8_t red, uint8_t green, uint8_t blue) {
+    GPIOE->BSRR = 0xFF << LED_D0 << 16;  // Clear bus
+    GPIOE->BSRR = red << LED_D0;         // Load red data
+		Delay(1);
+    GPIOE->BSRR = 1 << PE12;             // Latch Red
+		Delay(1);
+		GPIOE->BSRR = 1 << PE12 << 16;       // Disable Latch Red
+   
+    GPIOE->BSRR = 0xFF << LED_D0 << 16;  // Clear bus again
+    GPIOE->BSRR = green << LED_D0;       // Load green data
+    Delay(1);
+		GPIOE->BSRR = 1 << PE13;             // Latch Green
+    Delay(1);
+		GPIOE->BSRR = 1 << PE13 << 16;       // Disable Latch Green
+   
+    GPIOE->BSRR = 0xFF << LED_D0 << 16;  // Clear bus again
+    GPIOE->BSRR = blue << LED_D0;        // Load blue data
+    Delay(1);
+		GPIOE->BSRR = 1 << PE14;             // Latch Blue
+		Delay(1);
+		GPIOE->BSRR = 1 << PE14 << 16;       // Disable Latch Blue
+      
+      GPIOE->BSRR = 1UL<<LED_BAR_OE<<16;              //Enable output
+}
+
+void update_RGB_bar_from_HR(void) {
+
+        // Convert to Voltage
+        float voltage = ((adcVal)* 3.3f) / 4095.0f;
+
+        // Scale voltage to LED steps (0V = 0 LEDs, 3V = 24 LEDs)
+        uint8_t led_steps = (voltage / MAX_VOLTAGE) * MAX_LEDS;
+        if (led_steps > MAX_LEDS) {
+            led_steps = MAX_LEDS;  // Limit max LEDs
+        }
+
+        // Initialize LED counts
+        uint8_t red_leds = 0;
+        uint8_t green_leds = 0;
+        uint8_t blue_leds = 0;
+
+        // Assign LEDs to each color
+        if (led_steps <= 8) {  
+            red_leds = led_steps;  // Use only red LEDs
+        }
+        else if (led_steps <= 16) {  
+            red_leds = 8;  // Full Red
+            green_leds = led_steps - 8;  // Remaining LEDs go to Green
+        }
+        else {  
+            red_leds = 8;   // Full Red
+            green_leds = 8; // Full Green
+            blue_leds = led_steps - 16; // Remaining LEDs go to Blue
+        }
+
+        // Convert to LED bus format (1 bit per LED)
+        uint8_t red_mask = (1 << red_leds) - 1;
+        uint8_t green_mask = (1 << green_leds) - 1;
+        uint8_t blue_mask = (1 << blue_leds) - 1;
+
+        // Update RGB LED Bar
+        Write_RGB_LEDBus(red_mask, green_mask, blue_mask);
+
+}

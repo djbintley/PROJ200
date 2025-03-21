@@ -121,7 +121,7 @@ void update_LCD(void){
 			printLCD("                ");  // Adjust the number of spaces to cover the line
 		
 		// Now print the new BPM value.
-			sprintf(HR, "BPM: %u", ADC_Get_HeartRateBPM());
+			sprintf(HR, "BPM: %u", getbpm());
 			cmdLCD(LCD_LINE1);
 			printLCD(HR);
 	}

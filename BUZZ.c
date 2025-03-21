@@ -31,7 +31,7 @@ unsigned int beep = 0;
 void TIM7_IRQHandler(void) {													// TIM7 Update handler
 	TIM7->SR &= ~TIM_SR_UIF;
 	if (beep ==1) {
-		if (counter < 383){
+		if (counter < 382){
 			counter++;
 			if (onoff == 0){
 					onoff = 1;
