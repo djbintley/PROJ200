@@ -85,8 +85,10 @@ void display_menu(void) {
     send_string(COLOUR_RED "H - Heartrate:     " COLOUR_RESET "\r\n");
     send_string(COLOUR_WHITE "O - Oxygen Level:  " COLOUR_RESET "\r\n");
     send_string(COLOUR_YELLOW "T - Temperature:   " COLOUR_RESET "\r\n");
-    send_string(COLOUR_GREEN "U - Humidity:     " COLOUR_RESET "\r\n");
+    send_string(COLOUR_GREEN "P - Pressure:     " COLOUR_RESET "\r\n");
     send_string(COLOUR_BLUE "M - Movement:     " COLOUR_RESET "\r\n");
+	
+	
 }
 
 //\033[<row>;<col>H for movement  3:15, 4:18, 5:17, 6:14, 7:14
@@ -104,14 +106,17 @@ void update_menu(void){
 	//Update Oxygen
 	send_string("\033[4;18H");
 	send_string(RESET_LINE);
-  send_string("");
+  send_string("98%");
 	
 	//Update Temperature
 	send_string("\033[5;17H");
 	send_string(RESET_LINE);
-  send_string("Unavailable");
+  send_string("21");
 	
-	
+	//Update Pressure
+	send_string("\033[6;14H");
+	send_string(RESET_LINE);
+  send_string("0");
 }
 
 void hide_cursor(void){

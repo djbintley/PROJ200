@@ -1,6 +1,7 @@
 #include "LCD.h"
 #include "stdio.h"
 
+int toggle = 0;
 void lcd_delayus(unsigned int us)		//blocking delay for LCD, argument is approximate number of micro-seconds to delay
 {
 	unsigned char i;
@@ -162,7 +163,13 @@ void update_LCD(void){
 		
 		//print test3
 			cmdLCD(LCD_LINE1);
-			printLCD("test3");
+			if (toggle == 0){
+				putLCD(0x00);
+				toggle = 1;
+			}else{
+				putLCD(0x01);
+				toggle = 0;
+			}
 	}
 }
 
@@ -182,8 +189,8 @@ void createHeartCharacter(void) {
     for (int i = 0; i < 8; i++) {
 			putLCD(heart[i]);
     }
-		cmdLCD(0x80);
-		putLCD(0x00);
+		//cmdLCD(0x80);
+		//putLCD(0x00);
 }
 
 void createInverseHeartCharacter(void) {
@@ -202,6 +209,6 @@ void createInverseHeartCharacter(void) {
     for (int i = 0; i < 8; i++) {
         putLCD(inverse_heart[i]);
     }
-    cmdLCD(0x80); // Move cursor to the first position
-    putLCD(0x01); // Display the inverse heart character (CGRAM address 0x01)
+    //cmdLCD(0x80); // Move cursor to the first position
+    //putLCD(0x01); // Display the inverse heart character (CGRAM address 0x01)
 }

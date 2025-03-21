@@ -102,7 +102,7 @@ unsigned int ADC_Get_HeartRateBPM(void)
 }
 
 static unsigned int buff_index = 0;
-static unsigned int big_sampleBuffer[15]= {80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,};
+static unsigned int big_sampleBuffer[30]= {80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80,80};
 
 void buffdate (void){
 	big_sampleBuffer[buff_index] = ADC_Get_HeartRateBPM();
