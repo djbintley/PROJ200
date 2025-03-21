@@ -38,5 +38,6 @@ void LCD_INIT(void);
 void printLCD(char *data);
 void SHOWHR(char heartrate);
 void update_LCD(void);
-
+void createHeartCharacter(void);
+void	createInverseHeartCharacter(void);
 #endif

@@ -49,7 +49,7 @@ int main(void)
         // Process one ADC sample for heartbeat detection (call at 1ms rate)
         ADC_HeartRate_Update();
         // Every 1000ms, update the display and USART output with the current BPM
-        if((timer_tick - lastDisplayTime) >= 1000)
+        if((timer_tick - lastDisplayTime) >= 500)
         {
             lastDisplayTime = timer_tick;
 				    buffdate();

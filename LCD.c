@@ -111,8 +111,12 @@ void LCD_INIT(void)
 	cmdLCD(0x01);	//Clear LCD
 	cmdLCD(0x06);	//Entry mode, auto increment with no shift
 	cmdLCD(LCD_LINE1);
+	createHeartCharacter();
+	createInverseHeartCharacter();
 	printLCD("Hello");
 }
+
+char TEMP[30]; //buffer used for Temperature
 
 void update_LCD(void){
 	if (Menu == 0){
@@ -132,8 +136,10 @@ void update_LCD(void){
 		
 		//print test
 			cmdLCD(LCD_LINE1);
-			printLCD("test");
-		
+			int temp = 21;
+			sprintf(TEMP, "Temperature = %d", temp);
+			cmdLCD(LCD_LINE1);
+			printLCD(TEMP);
 	}
 	if (Menu == 2) {
 		// Clear LCD
@@ -142,7 +148,10 @@ void update_LCD(void){
 		
 		//print test2
 			cmdLCD(LCD_LINE1);
-			printLCD("test2");
+			int ox = 98;
+			sprintf(TEMP, "SpO2 = %d%%", ox);
+			cmdLCD(LCD_LINE1);
+			printLCD(TEMP);
 		
 	}
 	
@@ -155,17 +164,44 @@ void update_LCD(void){
 			cmdLCD(LCD_LINE1);
 			printLCD("test3");
 	}
-	if (Menu == 4) {
-		// Clear LCD
-			cmdLCD(LCD_LINE1);
-			printLCD("                ");  // Adjust the number of spaces to cover the line
-		
-		// Now print the new BPM value.
-			sprintf(HR, "BPM: %u", ADC_Get_HeartRateBPM());
-			cmdLCD(LCD_LINE1);
-			printLCD(HR);
-		  Menu=0;	
-		
-	}
-	
+}
+
+void createHeartCharacter(void) {
+    unsigned char heart[8] = {
+        0b00000,
+        0b01010,
+        0b11111,
+        0b11111,
+        0b01110,
+        0b00100,
+        0b00000,
+        0b00000
+    };
+
+    cmdLCD(0x40); // Set CGRAM Address
+    for (int i = 0; i < 8; i++) {
+			putLCD(heart[i]);
+    }
+		cmdLCD(0x80);
+		putLCD(0x00);
+}
+
+void createInverseHeartCharacter(void) {
+    unsigned char inverse_heart[8] = {
+        0b11111,
+        0b10101,
+        0b00000,
+        0b00000,
+        0b10001,
+        0b11011,
+        0b11111,
+        0b11111
+    };
+
+    cmdLCD(0x48); // Set CGRAM Address for the second custom character
+    for (int i = 0; i < 8; i++) {
+        putLCD(inverse_heart[i]);
+    }
+    cmdLCD(0x80); // Move cursor to the first position
+    putLCD(0x01); // Display the inverse heart character (CGRAM address 0x01)
 }

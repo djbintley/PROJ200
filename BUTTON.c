@@ -66,7 +66,8 @@ void EXTI0_IRQHandler(void) {
     if (EXTI->PR & EXTI_PR_PR0) {
         EXTI->PR = EXTI_PR_PR0;  // Clear pending bit
         GPIOB->ODR ^= (1 << 14);
-				Menu--;
+				if (Menu == 0)Menu = 3;
+				else Menu--;
     }
 }
 
@@ -81,7 +82,8 @@ void EXTI2_IRQHandler(void) {
     if (EXTI->PR & EXTI_PR_PR2) {
         EXTI->PR = EXTI_PR_PR2;  // Clear pending bit
         GPIOB->ODR ^= (1 << 14);
-				Menu++;
+				if (Menu == 3)Menu = 0;
+				else Menu++;
     }
 }
 

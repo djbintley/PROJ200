@@ -73,7 +73,7 @@ void display_volts(){
       
 };
 
-char HR[30]; //budder used for heartrate
+char HR[30]; //buffer used for heartrate
 
 void display_menu(void) {
     send_string(RESET_SCREEN); // Clear screen and reset cursor

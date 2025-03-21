@@ -106,15 +106,15 @@ static unsigned int big_sampleBuffer[15]= {80,80,80,80,80,80,80,80,80,80,80,80,8
 
 void buffdate (void){
 	big_sampleBuffer[buff_index] = ADC_Get_HeartRateBPM();
-	if (buff_index <14)buff_index++;
+	if (buff_index <29)buff_index++;
 	else buff_index = 0;
 }
 
 unsigned int getbpm (void){
 	unsigned int sum = 0;
 	unsigned char i;
-	for(i = 0; i < 15; i++){
+	for(i = 0; i < 30; i++){
 			sum += big_sampleBuffer[i];
 	}
-	return sum / 15;
+	return sum / 30;
 }
