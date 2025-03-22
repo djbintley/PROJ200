@@ -1,5 +1,6 @@
 #include "USART.h"
 #include "stdio.h"
+#include "SPI.h"
 
 //USART is set so Baud Rate for 230400 bps, 8 data bits, 1 stop bit, even parity, flow control off
 
@@ -111,12 +112,16 @@ void update_menu(void){
 	//Update Temperature
 	send_string("\033[5;17H");
 	send_string(RESET_LINE);
-  send_string("21");
+	float temp = latest_temperature;
+	sprintf(HR, "%.1f C", temp+426.3);
+  send_string(HR);
 	
 	//Update Pressure
 	send_string("\033[6;14H");
 	send_string(RESET_LINE);
-  send_string("0");
+	temp = latest_pressure;
+	sprintf(HR, "%.1f Pa" , temp-139000);
+  send_string(HR);
 }
 
 void hide_cursor(void){

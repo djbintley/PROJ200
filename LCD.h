@@ -3,6 +3,7 @@
 #include <stm32f4xx.h>
 #include "USART.h"
 #include "BUTTON.h"
+#include "SPI.h"
 
 #define LCD_PORT	GPIOD
 #define LCD_RS_pin	11

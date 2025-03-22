@@ -135,10 +135,10 @@ void update_LCD(void){
 			cmdLCD(LCD_LINE1);
 			printLCD("                ");  // Adjust the number of spaces to cover the line			
 		
-		//print test
-			cmdLCD(LCD_LINE1);
-			int temp = 21;
-			sprintf(TEMP, "Temperature = %d", temp);
+			// Format temperature to 1 decimal place
+			float temp = latest_temperature;
+			sprintf(TEMP, "Temp: %.1f C", temp+426.3);
+
 			cmdLCD(LCD_LINE1);
 			printLCD(TEMP);
 	}

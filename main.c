@@ -9,6 +9,7 @@
 #include "Button.h"
 #include "PLL_Config.c"
 #include "stdio.h"
+#include "SPI.h"
 
 extern uint32_t timer_tick;
 extern unsigned int adcVal;
@@ -31,6 +32,7 @@ int main(void)
 		BUZZ_INIT();
 		interrupt_init();
 		Buttons_init();
+		SPL06_Init();
     
     // Use only the RED LED
     OFFBOARD_LED_ON(RED_LED);
