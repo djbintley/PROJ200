@@ -33,6 +33,7 @@ int main(void)
 		interrupt_init();
 		Buttons_init();
 		SPL06_Init();
+		SEG_INIT();
     
     // Use only the RED LED
     OFFBOARD_LED_ON(RED_LED);
@@ -57,7 +58,11 @@ int main(void)
 				    buffdate();
 						update_LCD();
 					  update_menu();
-						update_RGB_bar_from_HR();
+						//update_RGB_bar_from_HR();
+						if (getbpm() < 100){
+							setDigit(getbpm()/10,LDIGIT);
+							setDigit(getbpm()%10,RDIGIT);
+						}	
 					
 /*ADC_Get_MinMax(&minVal, &maxVal);
 sprintf(HR, "MIN: %u, MAX: %u", minVal, maxVal);

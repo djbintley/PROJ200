@@ -3,7 +3,7 @@
 #include "stm32f4xx.h"
 #include "TIM.h"
 #include "Buzz.h"
-
+#include "LED.h"
 
 #define ADC_input_port      GPIOC
 #define ADC_input_pin       3

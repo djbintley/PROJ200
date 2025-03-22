@@ -26,7 +26,16 @@ extern unsigned int adcVal;
 #define PE12 12 // Red Latch
 #define PE13 13 // Green Latch
 #define PE14 14 // Blue Latch
+#define LED_DIG_LE1 10
+#define LED_DIG_LE2 11
+#define LED_DIG_OE 15
+#define LDIGIT 10
+#define RDIGIT 11
 
+void SEG_INIT(void);
+void Write_LEDBus (char data1, char data2);
+void setDigit (char data, char Latch);
+	
 //RGB BAR functions
 void BAR_INIT(void);
 void Write_RGB_LEDBus(uint8_t red, uint8_t green, uint8_t blue);

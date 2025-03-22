@@ -71,6 +71,7 @@ void ADC_HeartRate_Update(void)
     if(hr_sampleIndex == 0)
     {
         unsigned int avgVal = hr_ComputeAverage();
+				update_RGB_bar_from_HR();
         
         // If the averaged value exceeds HIGH_THRESHOLD, no beat is triggered,
         // and at least REFRACTORY_MS has elapsed since the previous beat, register a beat.

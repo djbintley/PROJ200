@@ -87,7 +87,7 @@ void BAR_INIT(void){
     GPIOE->PUPDR &= ~((3UL << (2 * LED_BAR_OE)));
     GPIOE->PUPDR |= (2UL << (2 * LED_BAR_OE)); // Pull-down
                   
-        GPIOE->BSRR = (1UL << PE12) << 16; // Set Red Latch LOW (Disabled)
+		GPIOE->BSRR = (1UL << PE12) << 16; // Set Red Latch LOW (Disabled)
     GPIOE->BSRR = (1UL << PE13) << 16; // Set Green Latch LOW (Disabled)
     GPIOE->BSRR = (1UL << PE14) << 16; // Set Blue Latch LOW (Disabled)
     GPIOE->BSRR = (1UL << LED_BAR_OE);  // Disable RGB Bar (OE HIGH)
@@ -118,7 +118,7 @@ void Write_RGB_LEDBus(uint8_t red, uint8_t green, uint8_t blue) {
 		Delay(1);
 		GPIOE->BSRR = 1 << PE14 << 16;       // Disable Latch Blue
       
-      GPIOE->BSRR = 1UL<<LED_BAR_OE<<16;              //Enable output
+    GPIOE->BSRR = 1UL<<LED_BAR_OE<<16;              //Enable output
 }
 
 void update_RGB_bar_from_HR(void) {
@@ -159,4 +159,71 @@ void update_RGB_bar_from_HR(void) {
         // Update RGB LED Bar
         Write_RGB_LEDBus(red_mask, green_mask, blue_mask);
 
+}
+
+void SEG_INIT(void){
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN;	//ONLY GPIO E clock enable
+	
+	//for(char i=2; i<=9; i++){
+		//GPIOE->MODER &= ~(3UL<<(2*i));     //Set bits to default INPUT (not used because it is unclear and assumes contiguity)
+	//}
+	
+	GPIOE->MODER &= ~(						//Sets to default INPUT to clear
+			3UL<<(2*LED_D0)|
+			3UL<<(2*LED_D1)|
+			3UL<<(2*LED_D2)|
+			3UL<<(2*LED_D3)|
+			3UL<<(2*LED_D4)|
+			3UL<<(2*LED_D5)|
+			3UL<<(2*LED_D6)|
+			3UL<<(2*LED_D7)|
+			3UL<<(2*LED_DIG_LE1)|
+			3UL<<(2*LED_DIG_LE2)|
+			3UL<<(2*LED_DIG_OE));
+	
+	GPIOE->MODER |= (						//Sets to OUTPUT
+			1UL<<(2*LED_D0)|
+			1UL<<(2*LED_D1)|
+			1UL<<(2*LED_D2)|
+			1UL<<(2*LED_D3)|
+			1UL<<(2*LED_D4)|
+			1UL<<(2*LED_D5)|
+			1UL<<(2*LED_D6)|
+			1UL<<(2*LED_D7)|
+			1UL<<(2*LED_DIG_LE1)|
+			1UL<<(2*LED_DIG_LE2)|
+			1UL<<(2*LED_DIG_OE));
+			
+	GPIOE->BSRR = 0xFF<<2<<16;			//set bus to 0
+	GPIOE->BSRR = 1UL<<LED_DIG_LE1<<16;		//SET latch enable 1 to 0 
+	GPIOE->BSRR = 1UL<<LED_DIG_LE2<<16;		//SET latch enable 2 to 0 
+	GPIOE->BSRR = 1UL<<LED_DIG_OE;				//Set Output Enable to 0 (off as it is active high)
+}
+
+const int LED_Values[] = {0x7B,0x60,0x3E,0x7C,0x65,0x5D,0x5F,0x70,0x7F,0x7D};
+
+void Write_LEDBus (char data1, char data2){
+	GPIOE->BSRR = 0xFF<<2<<16;							//set bus to 0
+	GPIOE->BSRR = data1<<2;									//set bus to data for left digit 
+	Delay(1);															//Setup and hold delay
+	GPIOE->BSRR = 1<<LED_DIG_LE1; 					//Writes data to Latch 1 (Left Digit)
+	Delay(1);
+	GPIOE->BSRR = 1UL<<LED_DIG_LE1<<16; 		//Disables Latch 1
+	GPIOE->BSRR = 0xFF<<2<<16;							//set bus to 0
+	GPIOE->BSRR = data2<<2;									//set bus to data for right digit 
+	Delay(1);
+	GPIOE->BSRR = 1<<LED_DIG_LE2; 					//Writes data to Latch 2	(Right Digit)
+	Delay(1);
+	GPIOE->BSRR = 1UL<<LED_DIG_LE2<<16; 		//Disables Latch 2
+	GPIOE->BSRR = 1UL<<LED_DIG_OE<<16;			//Enable output	
+}
+
+void setDigit (char data, char Latch){
+	GPIOE->BSRR = 0xFF<<2<<16;							//set bus to 0
+	GPIOE->BSRR = LED_Values[data]<<2;									//set bus to data for left digit 
+	Delay(1);															//Setup and hold delay
+	GPIOE->BSRR = 1<<Latch; 					//Writes data to Latch 1 (Left Digit)
+	Delay(1);
+	GPIOE->BSRR = 1UL<<Latch<<16; 		//Disables Latch 1
+	GPIOE->BSRR = 1UL<<LED_DIG_OE<<16;			//Enable output	
 }
