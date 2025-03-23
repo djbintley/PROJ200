@@ -479,6 +479,16 @@
               <FileType>5</FileType>
               <FilePath>.\SPI.h</FilePath>
             </File>
+            <File>
+              <FileName>I2C.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\I2C.h</FilePath>
+            </File>
+            <File>
+              <FileName>I2C.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\I2C.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
