@@ -37,6 +37,7 @@ int main(void)
     
     // Use only the RED LED
     OFFBOARD_LED_ON(RED_LED);
+		//OFFBOARD_LED_ON(IR_LED);
 		DAC2_DC(4000);
 	
     // Initialize heartbeat detection
@@ -46,7 +47,7 @@ int main(void)
     
     hide_cursor();
 		display_menu();
-		unsigned int minVal, maxVal;
+
     while(1)
     {
         // Process one ADC sample for heartbeat detection (call at 1ms rate)
@@ -58,18 +59,12 @@ int main(void)
 				    buffdate();
 						update_LCD();
 					  update_menu();
-						//update_RGB_bar_from_HR();
 						if (getbpm() < 100){
 							setDigit(getbpm()/10,LDIGIT);
 							setDigit(getbpm()%10,RDIGIT);
 						}	
 					
-/*ADC_Get_MinMax(&minVal, &maxVal);
-sprintf(HR, "MIN: %u, MAX: %u", minVal, maxVal);
-cmdLCD(LCD_LINE2); // For example, display on second line of LCD
-printLCD(HR);
-send_string(HR);
-send_string("\r\n");*/
+
 
         }
         

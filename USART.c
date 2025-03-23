@@ -78,7 +78,7 @@ char HR[30]; //buffer used for heartrate
 
 void display_menu(void) {
     send_string(RESET_SCREEN); // Clear screen and reset cursor
-
+		
     // Title
     send_string(COLOUR_WHITE "=== SPO2 MONITOR ===" COLOUR_RESET "\r\n\r\n");
 
@@ -87,7 +87,11 @@ void display_menu(void) {
     send_string(COLOUR_WHITE "O - Oxygen Level:  " COLOUR_RESET "\r\n");
     send_string(COLOUR_YELLOW "T - Temperature:   " COLOUR_RESET "\r\n");
     send_string(COLOUR_GREEN "P - Pressure:     " COLOUR_RESET "\r\n");
-    send_string(COLOUR_BLUE "M - Movement:     " COLOUR_RESET "\r\n");
+    send_string(COLOUR_BLUE "M - Movement:     " COLOUR_RESET "\r\n\r\n");
+		send_string(COLOUR_WHITE "Samples:" COLOUR_RESET "\r\n");
+		send_string(COLOUR_WHITE "Max = " COLOUR_RESET "\r\n");
+		send_string(COLOUR_WHITE "Min =      " COLOUR_RESET "\r\n");
+		send_string(COLOUR_WHITE "Average =      " COLOUR_RESET "\r\n");
 	
 	
 }
@@ -122,6 +126,25 @@ void update_menu(void){
 	temp = latest_pressure;
 	sprintf(HR, "%.1f Pa" , temp-139000);
   send_string(HR);
+	
+	
+	unsigned int avg = 0;
+	avg = hr_ComputeAverage();
+	//Update Samples
+	send_string("\033[10;7H");
+	send_string(RESET_LINE);
+	unsigned int minVal, maxVal;
+	ADC_Get_MinMax(&minVal, &maxVal);
+	sprintf(HR, "%u", maxVal);
+	send_string(HR);
+	send_string("\033[11;7H");
+	send_string(RESET_LINE);
+	sprintf(HR, "%u", minVal);
+	send_string(HR);
+	send_string("\033[12;11H");
+	send_string(RESET_LINE);
+	sprintf(HR, "%u", avg);
+	send_string(HR);
 }
 
 void hide_cursor(void){

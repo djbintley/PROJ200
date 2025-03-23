@@ -1,5 +1,6 @@
 #include "TIM.h"
 
+
 uint32_t timer_tick = 0; // Global variable to track timer ticks - used with timer 2
 
 void Init_Timer2(void)
@@ -22,10 +23,12 @@ void Delay(uint32_t ms) {
 void TIM2_IRQHandler(void)                //TIMER 2 INTERRUPT SERVICE ROUTINE
 {
       TIM2->SR&=~TIM_SR_UIF;                    //clear interrupt flag in status register
-      
+      //ADC_HeartRate_Update();
       timer_tick++;                                               // Increment tick counter
 }
 
+
+//BAD TIMER
 void delay3(int x){								// delay a specified number of milliseconds
 	volatile unsigned int i = 0;			// Create a local variable "i"
 	while(i<SystemCoreClock/(36000/x)){			// 

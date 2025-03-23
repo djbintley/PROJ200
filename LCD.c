@@ -1,5 +1,6 @@
 #include "LCD.h"
 #include "stdio.h"
+#include "ADC.h"
 
 int toggle = 0;
 void lcd_delayus(unsigned int us)		//blocking delay for LCD, argument is approximate number of micro-seconds to delay
@@ -118,6 +119,7 @@ void LCD_INIT(void)
 }
 
 char TEMP[30]; //buffer used for Temperature
+unsigned int minVal, maxVal;
 
 void update_LCD(void){
 	if (Menu == 0){
@@ -170,6 +172,12 @@ void update_LCD(void){
 				putLCD(0x01);
 				toggle = 0;
 			}
+			ADC_Get_MinMax(&minVal, &maxVal);
+			sprintf(HR, "MIN:%uMAX:%u", minVal, maxVal);
+			cmdLCD(LCD_LINE2); //display on second line of LCD
+			printLCD(HR);
+			//send_string(HR);
+			//send_string("\r\n");
 	}
 }
 

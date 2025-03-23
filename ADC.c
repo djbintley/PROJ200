@@ -41,7 +41,7 @@ static unsigned int hr_currentBPM = 0;    // Calculated BPM
 static unsigned char hr_beatTriggered = 0; // Flag: 0 = no beat, 1 = beat detected
 
 // Compute the average of the last AVERAGE_COUNT samples.
-static unsigned int hr_ComputeAverage(void)
+unsigned int hr_ComputeAverage(void)
 {
     unsigned int sum = 0;
     unsigned char i;
