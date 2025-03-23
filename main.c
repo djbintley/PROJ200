@@ -50,13 +50,11 @@ int main(void)
     
     hide_cursor();
 		display_menu();
-<<<<<<< HEAD
 
-=======
 		unsigned int minVal, maxVal;
 		
 		 
->>>>>>> bdaa9125b73a288a4002ee5828edebe20a8d4beb
+
     while(1)
     {
         // Process one ADC sample for heartbeat detection (call at 1ms rate)
@@ -74,16 +72,8 @@ int main(void)
 						}	
 					
 
-<<<<<<< HEAD
-=======
-/*
-								}ADC_Get_MinMax(&minVal, &maxVal);
-sprintf(HR, "MIN: %u, MAX: %u", minVal, maxVal);
-cmdLCD(LCD_LINE2); // For example, display on second line of LCD
-printLCD(HR);
-send_string(HR);
-send_string("\r\n");*/
->>>>>>> bdaa9125b73a288a4002ee5828edebe20a8d4beb
+
+
 
         }
         

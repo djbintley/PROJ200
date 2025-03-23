@@ -127,8 +127,6 @@ void update_menu(void){
 	sprintf(HR, "%.1f Pa" , temp-139000);
   send_string(HR);
 	
-<<<<<<< HEAD
-	
 	unsigned int avg = 0;
 	avg = hr_ComputeAverage();
 	//Update Samples
@@ -147,8 +145,7 @@ void update_menu(void){
 	sprintf(HR, "%u", avg);
 	send_string(HR);
 }
-
-=======
+/*
 	//Update Movement
 	if(MovementDetected()) {
 						send_string("\033[7;14H");
@@ -161,7 +158,7 @@ void update_menu(void){
             send_string("Still\r\n");
       }
 		}
->>>>>>> bdaa9125b73a288a4002ee5828edebe20a8d4beb
+*/
 void hide_cursor(void){
 	send_string("\033[?25l");
 }
