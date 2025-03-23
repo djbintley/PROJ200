@@ -171,7 +171,23 @@ void update_LCD(void){
 				toggle = 0;
 			}
 	}
+	if (Menu == 4) {
+		// Clear LCD
+			cmdLCD(LCD_LINE1);
+			printLCD("                ");  // Adjust the number of spaces to cover the line			
+		
+		//print test2
+			cmdLCD(LCD_LINE1);
+			if(MovementDetected()) {
+						printLCD("Movement!");
+																 }
+					else {
+						printLCD("Still");
+      }
+		}
+		
 }
+
 
 void createHeartCharacter(void) {
     unsigned char heart[8] = {

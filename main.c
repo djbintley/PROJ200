@@ -10,6 +10,8 @@
 #include "PLL_Config.c"
 #include "stdio.h"
 #include "SPI.h"
+#include "I2C.h"
+
 
 extern uint32_t timer_tick;
 extern unsigned int adcVal;
@@ -34,6 +36,7 @@ int main(void)
 		Buttons_init();
 		SPL06_Init();
 		SEG_INIT();
+		IMU_INIT();
     
     // Use only the RED LED
     OFFBOARD_LED_ON(RED_LED);
@@ -47,6 +50,8 @@ int main(void)
     hide_cursor();
 		display_menu();
 		unsigned int minVal, maxVal;
+		
+		 
     while(1)
     {
         // Process one ADC sample for heartbeat detection (call at 1ms rate)
@@ -64,7 +69,9 @@ int main(void)
 							setDigit(getbpm()%10,RDIGIT);
 						}	
 					
-/*ADC_Get_MinMax(&minVal, &maxVal);
+
+/*
+								}ADC_Get_MinMax(&minVal, &maxVal);
 sprintf(HR, "MIN: %u, MAX: %u", minVal, maxVal);
 cmdLCD(LCD_LINE2); // For example, display on second line of LCD
 printLCD(HR);
@@ -76,4 +83,5 @@ send_string("\r\n");*/
         // Wait approximately 1ms before processing the next ADC sample.
         Delay(1);
     }
+	
 }

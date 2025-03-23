@@ -94,7 +94,7 @@ void display_menu(void) {
 
 //\033[<row>;<col>H for movement  3:15, 4:18, 5:17, 6:14, 7:14
 
-
+// Function uses cursor control to update the values after the menu
 void update_menu(void){
 	send_string(RESET_CURSOR);
 	
@@ -122,8 +122,19 @@ void update_menu(void){
 	temp = latest_pressure;
 	sprintf(HR, "%.1f Pa" , temp-139000);
   send_string(HR);
-}
-
+	
+	//Update Movement
+	if(MovementDetected()) {
+						send_string("\033[7;14H");
+						send_string(RESET_LINE);
+            send_string("Movement Detected!\r\n");
+																 }
+					else {
+						send_string("\033[7;14H");
+						send_string(RESET_LINE);
+            send_string("Still\r\n");
+      }
+		}
 void hide_cursor(void){
 	send_string("\033[?25l");
 }

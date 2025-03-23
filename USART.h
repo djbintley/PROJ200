@@ -3,6 +3,7 @@
 #include "stm32f4xx.h"
 #include "TIM.h"
 #include "ADC.h"
+#include "I2C.h"
 
 extern char HR[30]; // buffer used to displate heartrate
 
