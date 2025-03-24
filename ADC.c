@@ -120,6 +120,11 @@ unsigned int getbpm (void){
 	return sum / 30;
 }
 
+// Returns the ADC reading converted to voltage (float)
+float get_ADC_voltage(void) {
+    unsigned int adc_val = read_adc();
+    return (adc_val * 3.3f) / 4095.0f;
+}
 
 // Function to get the minimum and maximum values stored in the ADC buffer.
 // 'min' and 'max' are pointers where the results will be stored.

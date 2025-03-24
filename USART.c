@@ -78,7 +78,7 @@ char HR[30]; //buffer used for heartrate
 
 void display_menu(void) {
     send_string(RESET_SCREEN); // Clear screen and reset cursor
-		
+
     // Title
     send_string(COLOUR_WHITE "=== SPO2 MONITOR ===" COLOUR_RESET "\r\n\r\n");
 
@@ -87,9 +87,10 @@ void display_menu(void) {
     send_string(COLOUR_WHITE "O - Oxygen Level:  " COLOUR_RESET "\r\n");
     send_string(COLOUR_YELLOW "T - Temperature:   " COLOUR_RESET "\r\n");
     send_string(COLOUR_GREEN "P - Pressure:     " COLOUR_RESET "\r\n");
-    send_string(COLOUR_BLUE "M - Movement:     " COLOUR_RESET "\r\n\r\n");
-		send_string(COLOUR_WHITE "Samples:" COLOUR_RESET "\r\n");
-		send_string(COLOUR_WHITE "Max = " COLOUR_RESET "\r\n");
+    send_string(COLOUR_BLUE "M - Movement:     " COLOUR_RESET "\r\n");
+    send_string(COLOUR_CYAN "V - Voltage:     " COLOUR_RESET "\r\n");
+    send_string(COLOUR_WHITE "Samples:" COLOUR_RESET "\r\n");
+    send_string(COLOUR_WHITE "Max = " COLOUR_RESET "\r\n");
 		send_string(COLOUR_WHITE "Min =      " COLOUR_RESET "\r\n");
 		send_string(COLOUR_WHITE "Average =      " COLOUR_RESET "\r\n");
 	
@@ -98,25 +99,29 @@ void display_menu(void) {
 
 //\033[<row>;<col>H for movement  3:15, 4:18, 5:17, 6:14, 7:14
 
-// Function uses cursor control to update the values after the menu
-void update_menu(void){
-	send_string(RESET_CURSOR);
-	
+
+char selected_menu = 'H'; // default selection
+// Function uses cursor control to update the values after the menu and if else statement to highlight selected value
+
+void update_menu(void) {
 	//Update Heartrate
 	send_string("\033[3;15H");
 	send_string(RESET_LINE);
+	send_string(selected_menu == 'H' ? HIGHLIGHT : NORMAL);
 	sprintf(HR, "%u", getbpm());
   send_string(HR);
 	
 	//Update Oxygen
 	send_string("\033[4;18H");
 	send_string(RESET_LINE);
+	send_string(selected_menu == 'O' ? HIGHLIGHT : NORMAL);
   send_string("98%");
 	
 	//Update Temperature
 	send_string("\033[5;17H");
 	send_string(RESET_LINE);
 	float temp = latest_temperature;
+	send_string(selected_menu == 'T' ? HIGHLIGHT : NORMAL);
 	sprintf(HR, "%.1f C", temp+426.3);
   send_string(HR);
 	
@@ -124,41 +129,109 @@ void update_menu(void){
 	send_string("\033[6;14H");
 	send_string(RESET_LINE);
 	temp = latest_pressure;
+	send_string(selected_menu == 'P' ? HIGHLIGHT : NORMAL);
 	sprintf(HR, "%.1f Pa" , temp-139000);
   send_string(HR);
 	
-	unsigned int avg = 0;
-	avg = hr_ComputeAverage();
-	//Update Samples
-	send_string("\033[10;7H");
-	send_string(RESET_LINE);
-	unsigned int minVal, maxVal;
-	ADC_Get_MinMax(&minVal, &maxVal);
-	sprintf(HR, "%u", maxVal);
-	send_string(HR);
-	send_string("\033[11;7H");
-	send_string(RESET_LINE);
-	sprintf(HR, "%u", minVal);
-	send_string(HR);
-	send_string("\033[12;11H");
-	send_string(RESET_LINE);
-	sprintf(HR, "%u", avg);
-	send_string(HR);
-}
-/*
 	//Update Movement
+	send_string("\033[7;15H");
+  send_string(selected_menu == 'M' ? HIGHLIGHT : NORMAL);
 	if(MovementDetected()) {
-						send_string("\033[7;14H");
 						send_string(RESET_LINE);
-            send_string("Movement Detected!\r\n");
+            send_string("Movement Detected!");
 																 }
-					else {
-						send_string("\033[7;14H");
+					else
 						send_string(RESET_LINE);
-            send_string("Still\r\n");
-      }
-		}
-*/
+            send_string("Still");
+					
+	//Update Voltage
+		float voltage = get_ADC_voltage();
+    char buffer[30];
+
+    send_string("\033[8;13H");    // Position cursor (line 8, col 1)
+		send_string(selected_menu == 'V' ? HIGHLIGHT : NORMAL);
+    send_string(RESET_LINE);     // Clear line
+
+    sprintf(buffer, "%.2f V", voltage);
+    send_string(buffer);	
+
+		//Update Averages
+			unsigned int avg = 0;
+			avg = hr_ComputeAverage();
+			//Update Samples
+			send_string("\033[10;7H");
+			send_string(selected_menu == 'A' ? HIGHLIGHT : NORMAL);
+			send_string(RESET_LINE);
+			unsigned int minVal, maxVal;
+			ADC_Get_MinMax(&minVal, &maxVal);
+			sprintf(HR, "%u", maxVal);
+			send_string(HR);
+			send_string("\033[11;7H");
+			send_string(RESET_LINE);
+			sprintf(HR, "%u", minVal);
+			send_string(HR);
+			send_string("\033[12;11H");
+			send_string(RESET_LINE);
+			sprintf(HR, "%u", avg);
+			send_string(HR);
+}
+unsigned char receive_usart(void) {
+    if (USART3->SR & USART_SR_RXNE) {
+        return USART3->DR;
+    }
+    return 0;
+}
+
+void process_input(void) {
+    char input = receive_usart();
+    if (input == 0) return;  // No input received, skip
+
+    switch (input) {
+        case 'H':
+        case 'h':
+            selected_menu = 'H';
+            Menu = 0;
+            break;
+        case 'O':
+        case 'o':
+            selected_menu = 'O';
+            Menu = 2;
+            break;
+        case 'T':
+        case 't':
+            selected_menu = 'T';
+            Menu = 1;
+            break;
+        case 'P':
+        case 'p':
+            selected_menu = 'P';
+            Menu = 3;
+            break;
+        case 'M':
+        case 'm':
+            selected_menu = 'M';
+            Menu = 4;
+            break;
+				case 'V':
+        case 'v':
+            selected_menu = 'V';
+            Menu = 5;
+            break;
+				case 'A':
+        case 'a':
+            selected_menu = 'A';
+            Menu = 6;
+            break;
+        default:
+            return;
+    }
+    update_menu();  // Refresh immediately upon input
+    update_LCD();   // Also update LCD to reflect selection
+
+
+}
+
+
 void hide_cursor(void){
 	send_string("\033[?25l");
 }

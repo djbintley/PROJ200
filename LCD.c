@@ -131,8 +131,9 @@ void update_LCD(void){
 			sprintf(HR, "BPM: %u", getbpm());
 			cmdLCD(LCD_LINE1);
 			printLCD(HR);
+		  selected_menu = 'H';
 	}
-	if (Menu == 1) {
+	if (Menu == 2) {
 		// Clear LCD
 			cmdLCD(LCD_LINE1);
 			printLCD("                ");  // Adjust the number of spaces to cover the line			
@@ -143,8 +144,9 @@ void update_LCD(void){
 
 			cmdLCD(LCD_LINE1);
 			printLCD(TEMP);
+		  selected_menu = 'T';
 	}
-	if (Menu == 2) {
+	if (Menu == 1) {
 		// Clear LCD
 			cmdLCD(LCD_LINE1);
 			printLCD("                ");  // Adjust the number of spaces to cover the line			
@@ -155,14 +157,14 @@ void update_LCD(void){
 			sprintf(TEMP, "SpO2 = %d%%", ox);
 			cmdLCD(LCD_LINE1);
 			printLCD(TEMP);
-		
+		  selected_menu = 'O';		
 	}
 	
 	if (Menu == 3) {
 		// Clear LCD
 			cmdLCD(LCD_LINE1);
 			printLCD("                ");  // Adjust the number of spaces to cover the line			
-		
+			selected_menu = 'P';
 		//print test3
 			cmdLCD(LCD_LINE1);
 			if (toggle == 0){
@@ -171,19 +173,14 @@ void update_LCD(void){
 			}else{
 				putLCD(0x01);
 				toggle = 0;
+				
 			}
-			ADC_Get_MinMax(&minVal, &maxVal);
-			sprintf(HR, "MIN:%uMAX:%u", minVal, maxVal);
-			cmdLCD(LCD_LINE2); //display on second line of LCD
-			printLCD(HR);
-			//send_string(HR);
-			//send_string("\r\n");
 	}
 	if (Menu == 4) {
 		// Clear LCD
 			cmdLCD(LCD_LINE1);
 			printLCD("                ");  // Adjust the number of spaces to cover the line			
-		
+			selected_menu = 'M';
 		//print test2
 			cmdLCD(LCD_LINE1);
 			if(MovementDetected()) {
@@ -193,7 +190,32 @@ void update_LCD(void){
 						printLCD("Still");
       }
 		}
+
+	if (Menu == 5){
+		float voltage = get_ADC_voltage();
+    char buffer[20];
+		// Clear LCD
+		cmdLCD(LCD_LINE1);
+		printLCD("                ");  // Adjust the number of spaces to cover the line		
+    selected_menu = 'V';
 		
+		cmdLCD(LCD_LINE1);                 
+    sprintf(buffer, "Voltage: %.2fV", voltage);
+    printLCD(buffer);
+	}
+	if (Menu == 6) {
+		// Clear LCD
+			cmdLCD(LCD_LINE1);
+			printLCD("                ");  // Adjust the number of spaces to cover the line			
+			selected_menu = 'A';
+		//print test2
+			cmdLCD(LCD_LINE1);
+			ADC_Get_MinMax(&minVal, &maxVal);
+			sprintf(HR, "MIN:%uMAX:%u", minVal, maxVal);
+			cmdLCD(LCD_LINE1); //display on second line of LCD
+			printLCD(HR);
+
+	}
 }
 
 

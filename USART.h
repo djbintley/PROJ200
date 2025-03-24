@@ -4,8 +4,10 @@
 #include "TIM.h"
 #include "ADC.h"
 #include "I2C.h"
+#include "LCD.h"
 
 extern char HR[30]; // buffer used to displate heartrate
+extern char selected_menu;
 
 #define USART_PORT            GPIOD
 #define USART_TX_pin    8
@@ -18,9 +20,12 @@ extern char HR[30]; // buffer used to displate heartrate
 #define COLOUR_YELLOW   "\033[38;5;226m"   // YELLOW
 #define COLOUR_GREEN   "\033[38;5;46m"   // GREEN
 #define COLOUR_WHITE  "\033[38;5;255m"  // White
+#define COLOUR_CYAN "\033[38;5;51m"  // Cyan
 #define COLOUR_RESET    "\033[0m" //Turn off text colour
 
-//ANSI COLOUR FOR BG
+//ANSI COLOUR FOR HIGHLIGHT
+#define HIGHLIGHT "\033[7m"  // Inverse colours
+#define NORMAL    "\033[27m" // Reset inverse colours
 
 
 //SCREEEN RESET
@@ -36,6 +41,7 @@ void display_volts();
 void display_menu(void);
 void update_menu(void);
 void hide_cursor(void);
+void process_input(void);
 
 
 #endif

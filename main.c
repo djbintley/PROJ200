@@ -66,6 +66,7 @@ int main(void)
 				    buffdate();
 						update_LCD();
 					  update_menu();
+						process_input();
 						if (getbpm() < 100){
 							setDigit(getbpm()/10,LDIGIT);
 							setDigit(getbpm()%10,RDIGIT);
