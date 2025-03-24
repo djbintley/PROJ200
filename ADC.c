@@ -28,8 +28,8 @@ unsigned int read_adc(void)
 //--------------------- Heart Rate Detection (Hysteresis) ---------------------//
 
 // Parameters for the heartbeat detection algorithm.
-#define HIGH_THRESHOLD   2200   // ADC average must exceed this value to count a beat
-#define LOW_THRESHOLD    1000    // ADC average must drop below this value to allow a new beat
+#define HIGH_THRESHOLD   2500   // ADC average must exceed this value to count a beat
+#define LOW_THRESHOLD    1300    // ADC average must drop below this value to allow a new beat
 #define AVERAGE_COUNT    50      // Number of samples to average
 #define REFRACTORY_MS    300    // Minimum time (in ms) between beats
 

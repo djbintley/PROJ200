@@ -79,7 +79,9 @@ int main(void)
         }
         
         // Wait approximately 1ms before processing the next ADC sample.
+				ONBOARD_LED_ON(0);
         Delay(1);
+				ONBOARD_LED_OFF(0);
     }
 	
 }

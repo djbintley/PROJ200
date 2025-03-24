@@ -126,6 +126,8 @@ void update_LCD(void){
 		// Clear LCD
 			cmdLCD(LCD_LINE1);
 			printLCD("                ");  // Adjust the number of spaces to cover the line
+			cmdLCD(LCD_LINE2);
+			printLCD("                "); 
 		
 		// Now print the new BPM value.
 			sprintf(HR, "BPM: %u", getbpm());
@@ -144,7 +146,7 @@ void update_LCD(void){
 
 			cmdLCD(LCD_LINE1);
 			printLCD(TEMP);
-		  selected_menu = 'T';
+		  selected_menu = 'O';
 	}
 	if (Menu == 1) {
 		// Clear LCD
@@ -157,7 +159,7 @@ void update_LCD(void){
 			sprintf(TEMP, "SpO2 = %d%%", ox);
 			cmdLCD(LCD_LINE1);
 			printLCD(TEMP);
-		  selected_menu = 'O';		
+		  selected_menu = 'T';		
 	}
 	
 	if (Menu == 3) {
@@ -197,6 +199,8 @@ void update_LCD(void){
 		// Clear LCD
 		cmdLCD(LCD_LINE1);
 		printLCD("                ");  // Adjust the number of spaces to cover the line		
+		cmdLCD(LCD_LINE2);
+		printLCD("                "); 
     selected_menu = 'V';
 		
 		cmdLCD(LCD_LINE1);                 
