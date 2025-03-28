@@ -30,6 +30,7 @@ int main(void)
     LCD_INIT();
 		BAR_INIT();
     Init_Timer2();
+		Timer4_init();
     Init_USART();
 		BUZZ_INIT();
 		interrupt_init();
@@ -64,8 +65,8 @@ int main(void)
         {
             lastDisplayTime = timer_tick;
 				    buffdate();
-						update_LCD();
-					  update_menu();
+						//update_LCD();
+					  //update_menu();
 						process_input();
 						if (getbpm() < 100){
 							setDigit(getbpm()/10,LDIGIT);

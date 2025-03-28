@@ -15,6 +15,44 @@ void Init_Timer2(void)
       TIM2->CR1|=TIM_CR1_CEN;                                     //start timer counter
 }
 
+void Timer4_init(void)
+{
+    // Enable clock for Timer4
+    RCC->APB1ENR |= RCC_APB1ENR_TIM4EN;
+
+    // Set prescaler (assuming 84 MHz system clock, prescaler of 8399 gives 10 kHz)
+    TIM4->PSC = 8999;
+
+    // Set auto-reload value for 1-second overflow (at 10 kHz, this would be 9999)
+    TIM4->ARR = 9999;
+
+    // Enable update interrupt
+    TIM4->DIER |= TIM_DIER_UIE;
+
+    // Enable counter
+    TIM4->CR1 |= TIM_CR1_CEN;
+
+    // Enable TIM4 interrupt in NVIC
+    NVIC_SetPriority(TIM4_IRQn, 1); // Adjust priority if necessary
+    NVIC_EnableIRQ(TIM4_IRQn);
+}
+
+// External functions you will define elsewhere
+extern void update_menu(void);
+extern void update_LCD(void);
+
+void TIM4_IRQHandler(void)
+{
+    if (TIM4->SR & TIM_SR_UIF) // Check update interrupt flag
+    {
+        TIM4->SR &= ~TIM_SR_UIF; // Clear interrupt flag
+        
+        // Call your update functions
+        update_menu();
+        update_LCD();
+    }
+}
+
 void Delay(uint32_t ms) {
     uint32_t start_tick = timer_tick;       //Uses TIM2_IRQHandler
     while ((timer_tick - start_tick) < ms);
